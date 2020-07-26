@@ -1,25 +1,31 @@
-/*
- * @Author: feilong
- * @LastEditors: feilong
- * @Description:
- * @email: feilongphone@gmail.com
- */
 package main
 
 import (
 	"fmt"
+	"io/ioutil"
 
-	"../build/antlr4/golang/parser"
+	"CCodeHash/parser"
+
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"go.uber.org/zap"
 )
 
+//ReadFile read file to string.
+func ReadFile(path string) string {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		zap.L().Info("file read failed!")
+	}
+
+	return string(content)
+}
+
 func work() {
 	// Setup the input
-	is := antlr.NewInputStream("1 + 2 * 3")
+	is := antlr.NewInputStream(ReadFile("test/bt.c"))
 
 	// Create the Lexer
-	lexer := parser.NewCalcLexer(is)
+	lexer := parser.NewCLexer(is)
 
 	// Read all tokens
 	for {
