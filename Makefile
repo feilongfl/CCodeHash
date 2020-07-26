@@ -25,6 +25,8 @@ gitsubmod:
 test: build
 	@echo '========== TEST START ================='
 	./build/CCodeHash ./test/bt.c
+	./build/CCodeHash ./test/bt_comment.c
+	./build/CCodeHash ./test/bt_codechange.c
 
 build/antlr4/java:
 	pushd grammars-v4/c/ && antlr4 C.g4 -o ${WORKDIR}/build/antlr4/java

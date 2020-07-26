@@ -27,6 +27,6 @@ func FuncTableAdd(sig string, body string) {
 
 func PrintResult() {
 	for k, v := range FuncTable {
-		fmt.Printf("%s,%s\n", k, v)
+		fmt.Printf("%s\t%s\n", k, v)
 	}
 }
