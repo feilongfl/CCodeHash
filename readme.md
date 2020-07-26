@@ -2,6 +2,8 @@
 
 Generate function Hash for C
 
+> https://feilong.home.blog/2020/07/26/c%e8%af%ad%e8%a8%80%e5%87%bd%e6%95%b0%e4%bd%93%e5%8f%98%e5%8c%96%e7%82%b9%e6%8a%bd%e5%87%ba/
+
 ## example
 
 ```
