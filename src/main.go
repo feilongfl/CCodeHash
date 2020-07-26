@@ -1,12 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
+	"os"
 
 	"CCodeHash/parser"
 
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 )
 
@@ -20,22 +22,25 @@ func ReadFile(path string) string {
 	return string(content)
 }
 
-func work() {
+func work(path string) {
+	// initial map
+	FuncTableInit()
+
 	// Setup the input
-	is := antlr.NewInputStream(ReadFile("test/bt.c"))
+	is := antlr.NewInputStream(ReadFile(path))
 
 	// Create the Lexer
 	lexer := parser.NewCLexer(is)
+	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 
-	// Read all tokens
-	for {
-		t := lexer.NextToken()
-		if t.GetTokenType() == antlr.TokenEOF {
-			break
-		}
-		fmt.Printf("%s (%q)\n",
-			lexer.SymbolicNames[t.GetTokenType()], t.GetText())
-	}
+	// Create the Parser
+	p := parser.NewCParser(stream)
+
+	// Finally parse the expression
+	antlr.ParseTreeWalkerDefault.Walk(&cListener{}, p.CompilationUnit())
+
+	// print result
+	PrintResult()
 }
 
 func main() {
@@ -46,10 +51,25 @@ func main() {
 	undo := zap.ReplaceGlobals(logger)
 	defer undo()
 
-	zap.L().Debug("zap initial finish.")
+	// zap.L().Debug("zap initial finish.")
 
 	// Parse commandline
+	app := &cli.App{
+		Action: func(c *cli.Context) error {
+			path := "Nefertiti"
+			if c.NArg() > 0 {
+				path = c.Args().Get(0)
+				work(path)
+				return nil
+			}
+			return errors.New("no file!")
+		},
+	}
 
-	// work
-	work()
+	cli.AppHelpTemplate = `Calc funchash for C code
+USAGE:
+	CCodeHash file
+`
+
+	app.Run(os.Args)
 }
