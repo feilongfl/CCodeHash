@@ -4,7 +4,7 @@ all: gitsubmod build
 	echo done
 
 .PHONY: build
-build: 
+build: antlr
 	pushd src && go build -o ../build/ .
 
 .PHONY: clean
@@ -14,6 +14,7 @@ clean:
 antlr:
 	antlr4 grammars-v4/c/C.g4 -o build/antlr4/java
 	antlr4 grammars-v4/c/C.g4 -Dlanguage=Go -o build/antlr4/golang
+	ln -s $PWD/build/antlr4/golang/grammars-v4/c $PWD/build/antlr4/golang/parser
 
 gitsubmod:
 	git submodule update --init --recursive
